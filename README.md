@@ -93,7 +93,6 @@ Principais configurações em `application.properties`:
 - Conexão com banco
 - CORS
 - JWT
-- Upload de arquivos
 
 ## 🔒 Segurança
 - Autenticação via JWT
