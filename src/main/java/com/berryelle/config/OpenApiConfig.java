@@ -1,0 +1,79 @@
+package com.berryelle.config;
+
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Contact;
+import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.info.License;
+import io.swagger.v3.oas.models.servers.Server;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+@OpenAPIDefinition(
+        security = @SecurityRequirement(name = "Bearer Authentication")
+)
+@SecurityScheme(
+        name = "Bearer Authentication",
+        type = SecuritySchemeType.HTTP,
+        bearerFormat = "JWT",
+        scheme = "bearer"
+)
+
+public class OpenApiConfig {
+    @Value("${api.url}")
+    private String apiUrl;
+
+    @Value("${api.name}")
+    private String apiName;
+
+    @Value("${api.description}")
+    private String apiDescription;
+
+    @Value("${api.version}")
+    private String apiVersion;
+
+    @Value("${api.contact.name}")
+    private String apiContactName;
+
+    @Value("${api.contact.url}")
+    private String apiContactUrl;
+
+    @Value("${api.contact.email}")
+    private String apiContactEmail;
+
+    @Value("${api.license.name}")
+    private String apiLicenseName;
+
+    @Value("${api.local.url}")
+    private String apiLocalUrl;
+
+    private static final String LOCAL = "Local";
+
+    @Bean
+    public OpenAPI configuration() {
+        return new OpenAPI()
+                .info(this.customInfo())
+                .addServersItem(new Server().url(apiLocalUrl).description(LOCAL));
+    }
+
+    private Info customInfo() {
+        return new Info()
+                .title(apiName)
+                .version(apiVersion)
+                .description(apiDescription)
+                .contact(this.customContact());
+    }
+
+    private Contact customContact() {
+        return new Contact().name(apiContactName).url(apiContactUrl).email(apiContactEmail);
+    }
+
+    private License customLicense() {
+        return new License().name(apiLicenseName).url(apiUrl);
+    }
+}
